@@ -1,4 +1,4 @@
-namespace tabuleiro
+namespace ContextTabuleiro
 {
     public class Posicao
     {
@@ -7,8 +7,8 @@ namespace tabuleiro
 
         public Posicao(int linha, int coluna)
         {
-            Linha = linha; 
-            Coluna = coluna; 
+            Linha = linha;
+            Coluna = coluna;
         }
 
         public override string ToString()
