@@ -1,4 +1,4 @@
-namespace ContextTabuleiro
+namespace XadrezConsole.ContextTabuleiro
 {
     public class Peca
     {

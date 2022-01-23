@@ -1,4 +1,4 @@
-namespace ContextTabuleiro
+namespace XadrezConsole.ContextTabuleiro
 {
     public class Tabuleiro
     {
@@ -12,6 +12,11 @@ namespace ContextTabuleiro
         public int Linhas { get; set; }
         public int Colunas { get; set; }
         public Peca[,] Pecas { get; private set; }
+
+        public Peca Peca(int linha, int coluna)
+        {   
+            return Pecas[linha, coluna];
+        }
 
 
 
