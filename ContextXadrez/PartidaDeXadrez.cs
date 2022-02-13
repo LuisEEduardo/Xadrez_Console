@@ -12,6 +12,7 @@ namespace XadrezConsole.ContextXadrez
         private HashSet<Peca> pecas;
         private HashSet<Peca> capturadas;
         public bool Xeque { get; private set; }
+        public Peca VuneravelEnPassant { get; set; }
 
         public PartidaDeXadrez()
         {
@@ -20,6 +21,7 @@ namespace XadrezConsole.ContextXadrez
             JogadorAtual = Cor.Branca;
             Xeque = false;
             Terminada = false;
+            VuneravelEnPassant = null;
             pecas = new HashSet<Peca>();
             capturadas = new HashSet<Peca>();
             ColocarPecas();
@@ -56,6 +58,26 @@ namespace XadrezConsole.ContextXadrez
                 Tabuleiro.ColocarPeca(T, destinoT);
             }
 
+            // #jogadaespecial en passant
+            if (p is Peao)
+            {
+                if (origem.Coluna != destino.Coluna && pecaCapturada == null)
+                {
+                    Posicao posP;
+                    if (p.Cor == Cor.Branca)
+                    {
+                        posP = new Posicao(destino.Linha + 1, destino.Coluna);
+                    }
+                    else
+                    {
+                        posP = new Posicao(destino.Linha = 1, destino.Coluna);
+                    }
+                    pecaCapturada = Tabuleiro.RetirarPeca(posP);
+                    capturadas.Add(pecaCapturada);
+                }
+            }
+
+
             return pecaCapturada;
         }
 
@@ -83,6 +105,18 @@ namespace XadrezConsole.ContextXadrez
                 Turno++;
                 MudaJogador();
             }
+
+            Peca p = Tabuleiro.Peca(destino);
+            // #jogadaespecial en passant
+            if (p is Peao && (destino.Linha == origem.Linha - 2 || destino.Linha == origem.Linha + 2))
+            {
+                VuneravelEnPassant = p;
+            }
+            else
+            {
+                VuneravelEnPassant = null;
+            }
+
         }
 
         public void DesfazMovimento(Posicao origem, Posicao destino, Peca pecaCapturada)
@@ -114,6 +148,25 @@ namespace XadrezConsole.ContextXadrez
                 Peca T = Tabuleiro.RetirarPeca(destinoT);
                 T.IncrementarQtdMovimentos();
                 Tabuleiro.ColocarPeca(T, origemT);
+            }
+
+            // #jogadaespecial en passant
+            if (p is Peao)
+            {
+                if (origem.Coluna != destino.Coluna && pecaCapturada == VuneravelEnPassant)
+                {
+                    Peca peao = Tabuleiro.RetirarPeca(destino);
+                    Posicao posP;
+                    if (p.Cor == Cor.Branca)
+                    {
+                        posP = new Posicao(3, destino.Coluna);
+                    }
+                    else
+                    {
+                        posP = new Posicao(4, destino.Coluna);
+                    }
+                    Tabuleiro.ColocarPeca(peao, posP);
+                }
             }
         }
 
